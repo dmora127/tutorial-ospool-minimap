@@ -115,9 +115,11 @@ There are some files we will be using frequently that do not change often. One e
 >[!WARNING]
 > The OSDF caches files aggressively. Using files on the OSDF with names that are not unique from previous versions can cause your job to download an incorrect previous version of the data file. We recommend using unique version-controlled names for your files, such as `data_file_04JAN2025_version4.txt` with the data of last update and a version identifier. This ensures your files are correctly called by HTCondor from the OSDF. 
 
-1. Move your `minimap2.sif` container to your OSDF directory. Make sure to change `<ap##>` and `<user.name>` below to the AP number (`ap20`, `ap21`, or `<ap40>`) and the OSPool username assigned to you, respectively. 
+1. Move your `minimap2.sif` container to your OSDF directory. Make sure to change `<ap##>` and `<user.name>` below to the AP number (`ap20`, `ap21`, or `<ap40>`) and the OSPool username assigned to you, respectively.
 
     ```
+   mkdir /ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/
+   
    mv ~/tutorial-ospool-minimap/software/minimap2.sif /ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/minimap2.sif
    ```
 
