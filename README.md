@@ -154,7 +154,9 @@ There are some files we will be using frequently that do not change often. One e
        ```
 > [!IMPORTANT]  
 > Notice that we are using the `transfer_output_remaps` attribute in our submit file. By default, HTCondor will transfer outputs to the directory where we submitted our job from. Since we want to transfer the indexed reference genome file `Celegans_ref.mmi` to a specific directory, we can use the `transfer_output_remaps` attribute on our submission script. The syntax of this attribute is:
+>  
 >   ```transfer_output_remaps = "<file_on_execution_point>=<desired_path_to_file_on_access_point>``` 
+>  
 > It is also important to note that we are transferring our `Celegans_ref.mmi` to the OSDF directory `/ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/`. Since we will be reusing our indexed reference genome file for each mapping job in the next step, we benefit from the caching feature of the OSDF. Therefore, we can direct `transfer_output_remaps` to redirect the `Celegans_ref.mmi` file to our OSDF directory.
 
    3. Submit your `minimap2_index.sub` job to the OSPool
