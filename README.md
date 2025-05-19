@@ -1,4 +1,4 @@
-# Long-Read Genomics on the OSPool
+# Long-Read Read Mapping on the OSPool
 
 This tutorial will walk you through a long-read mapping analysis workflow using Oxford Nanopore data from the _C. elegans_ CB4856 and _C. elegans_ N2 strain Reference Genomes on the OSPool high-throughput computing ecosystem. You'll learn how to:
 
