@@ -62,13 +62,7 @@ To obtain a copy of the files used in this tutorial, you can
 
 * Copy the data files for the tutorial: 
   ```
-  cp /path/to/files/tutorial-ospoool-minimap_reads.tar.gz ~/tutorial-ospool-minimap/data/
-  ```
-  
-* Unpack `tutorial-ospoool-minimap_reads.tar.gz` and remove afterward
-  ```
-  tar -xzvf tutorial-ospoool-minimap_reads.tar.gz
-  rm ~/tutorial-ospool-minimap/data/tutorial-ospoool-minimap_reads.tar.gz
+  cp /path/to/files/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/
   ```
 
 ### Setting up your software environment
