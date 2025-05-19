@@ -196,10 +196,9 @@ There are some files we will be using frequently that do not change often. One e
         
        queue read_subset_file from ./list_of_FASTQs.txt
        ```
-    
-        In this step, we **are not** transferring our outputs using the OSDF. The mapped SAM files are intermediate temporary files in our analysis and do not benefit from the aggressive caching of the OSDF. By default, HTCondor will transfer outputs to the directory where we submitted our job from. Since we want to transfer the sorted mapped BAMs to a specific directory, we can use the `transfer_output_remaps` attribute on our submission script. The syntax of this attribute is:
-   
-        ```transfer_output_remaps = "<file_on_execution_point>=<desired_path_to_file_on_access_point>``` 
+
+>[!IMPORTANT]
+> In this step, we **are not** transferring our outputs using the OSDF. The mapped SAM files are intermediate temporary files in our analysis and do not benefit from the aggressive caching of the OSDF. 
     
    3. Submit your cluster of minimap2 jobs to the OSPool
    
