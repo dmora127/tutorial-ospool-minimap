@@ -62,7 +62,7 @@ To obtain a copy of the files used in this tutorial, you can
 
 * Copy the data files for the tutorial: 
   ```
-  cp /path/to/files/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/
+  cp /path/to/files/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/fastq_reads
   ```
 
 ### Setting up your software environment
