@@ -177,24 +177,24 @@ There are some files we will be using frequently that do not change often. One e
        
    2. Create `minimap2_mapping.sub` using either `vim` or `nano`
        ```
-        +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>/minimap2.sif"
+       +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>//tutorial-ospool-minimap/minimap2.sif"
     
-        executable             = ./minimap2_mapping.sh
-        arguments              = $(read_subset_file)
-        transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi, ./data/fastq_reads/$(read_subset_file)
+       executable             = ./minimap2_mapping.sh
+       arguments              = $(read_subset_file)
+       transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi, ./data/fastq_reads/$(read_subset_file)
     
-        transfer_output_files  = ./mapped_$(read_subset_file)_reads_to_genome.sam
-        transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam = ./mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
+       transfer_output_files  = ./mapped_$(read_subset_file)_reads_to_genome.sam
+       transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam = ./mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
         
-        output                 = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.out
-        error                  = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.err
-        log                    = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.log
+       output                 = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.out
+       error                  = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.err
+       log                    = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.log
         
-        request_cpus           = 2
-        request_disk           = 4 GB
-        request_memory         = 4 GB 
+       request_cpus           = 2
+       request_disk           = 4 GB
+       request_memory         = 4 GB 
         
-        queue read_subset_file from ./list_of_FASTQs.txt
+       queue read_subset_file from ./list_of_FASTQs.txt
        ```
     
         In this step, we **are not** transferring our outputs using the OSDF. The mapped SAM files are intermediate temporary files in our analysis and do not benefit from the aggressive caching of the OSDF. By default, HTCondor will transfer outputs to the directory where we submitted our job from. Since we want to transfer the sorted mapped BAMs to a specific directory, we can use the `transfer_output_remaps` attribute on our submission script. The syntax of this attribute is:
