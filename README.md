@@ -72,9 +72,9 @@ To obtain a copy of the files used in this tutorial, you can
   ```
 
 ### Setting up your software environment
-For this tutorial, we will be using an Apptainer/Singularity container to run `minimap2`. We will be using the `continuumio/miniconda3:latest` base image from Dockerhub to `conda install` minimap2 in our container. An Apptainer/Singularity definition file has been provided to you in this repository and can be found in `./tutorial-ospool-minimap/software/minimap2.def`. Additionally, for ease of use, a pre-built singularity image file for this tutorial has been provided `./tutorial-ospool-minimap/software/minimap2.sif`.
+For this tutorial, we will be using an Apptainer/Singularity container to run `minimap2`. We will be using the `continuumio/miniconda3:latest` base image from Dockerhub to `conda install` minimap2 in our container. An Apptainer/Singularity definition file has been provided to you in this repository and can be found in `./tutorial-ospool-minimap/software/minimap2.def`. 
 
-* If you would like to re-build the container yourself, you can run the following commands:
+1. Build the container by running the following commands:
     ```
     cd ~/tutorial-ospool-minimap/software/
     mkdir -p $HOME/tmp
