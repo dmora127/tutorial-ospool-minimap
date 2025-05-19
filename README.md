@@ -79,8 +79,9 @@ To obtain a copy of the files used in this tutorial, you can
 > ```
 > pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/software/minimap2.sif
 >
->pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq```
->
+>pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq
+> ```
+> 
 >While this method is preferred, if you run into any errors the `cp` commands above are more resilient to most intermittant OSDF issues. 
 
 ### Setting up your software environment
