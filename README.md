@@ -181,10 +181,10 @@ There are some files we will be using frequently that do not change often. One e
     
         executable             = ./minimap2_mapping.sh
         arguments              = $(read_subset_file)
-        transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/Celegans_ref.mmi, osdf:///ospool/<ap##>/data/<user.name>/basecalledBAMs/$(read_subset_file)
+        transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi, ./data/fastq_reads/$(read_subset_file)
     
         transfer_output_files  = ./mapped_$(read_subset_file)_reads_to_genome.sam
-        transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam=~/tutorial-ospool-minimap/mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
+        transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam = ./mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
         
         output                 = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.out
         error                  = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.err
@@ -194,7 +194,7 @@ There are some files we will be using frequently that do not change often. One e
         request_disk           = 4 GB
         request_memory         = 4 GB 
         
-        queue read_subset_file from ~/tutorial-ospool-minimap/list_of_FASTQs.txt
+        queue read_subset_file from ./list_of_FASTQs.txt
        ```
     
         In this step, we **are not** transferring our outputs using the OSDF. The mapped SAM files are intermediate temporary files in our analysis and do not benefit from the aggressive caching of the OSDF. By default, HTCondor will transfer outputs to the directory where we submitted our job from. Since we want to transfer the sorted mapped BAMs to a specific directory, we can use the `transfer_output_remaps` attribute on our submission script. The syntax of this attribute is:
