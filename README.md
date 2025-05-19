@@ -64,13 +64,13 @@ To obtain a copy of the files used in this tutorial, you can
 
 * To copy the data files for the tutorial, we're going to use the `pelican object get <object> <destination` command. We need to `get` two files: `minimap2.sif` and `wgs_reads_cb4856.fastq `. Run the following commands from the Access Point:
   * If you are on **AP20 or AP21**
-  * ```
+    ```
     cp /ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/software/minimap2.sif
     cp /ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq
     ```
     
   * If you are on **AP40**
-  * ```
+    ```
     cp /ospool/ap40/osg-staff/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/software/minimap2.sif
     cp /ospool/ap40/osg-staff/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq
     ```
