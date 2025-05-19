@@ -1,10 +1,8 @@
 # Long-Read Genomics on the OSPool
 
-This tutorial will walk you through a complete long-read sequencing analysis workflow using Oxford Nanopore data on the OSPool high-throughput computing ecosystem. You'll learn how to:
+This tutorial will walk you through a long-read mapping analysis workflow using Oxford Nanopore data from the _C. elegans_ CB4856 and _C. elegans_ N2 strain Reference Genomes on the OSPool high-throughput computing ecosystem. You'll learn how to:
 
-* Basecall raw Nanopore reads using the latest GPU-accelerated Dorado basecaller
 * Map your reads to a reference genome using Minimap2
-* Call structural variants using Sniffles2
 * Breakdown massive bioinformatics workflows into many independent smaller tasks
 * Submit hundreds to thousands of jobs with a few simple commands
 * Use the Open Science Data Federation (OSDF) to manage file transfer during job submission
@@ -41,7 +39,7 @@ Jump to...
 This tutorial assumes that you:
 
 * Have basic command-line experience (e.g., navigating directories, using bash, editing text files).
-* Have a working OSPool account and can log into an Access Point (e.g., ap40.uw.osg-htc.org).
+* Have a working OSPool account and can log into an Access Point (e.g., <ap40>.uw.osg-htc.org).
 * Are familiar with HTCondor job submission, including writing simple .sub files and tracking job status with condor_q.
 * Understand the general workflow of long-read sequencing analysis: basecalling → mapping → variant calling.
 * Have access to a machine with a GPU-enabled execution environment (provided automatically via the OSPool).
@@ -57,24 +55,76 @@ To obtain a copy of the files used in this tutorial, you can
 * Clone the repository, with 
   
   ```
-  git clone https://github.com/osg-htc/tutorial-long-read-genomics
+  git clone https://github.com/osg-htc/tutorial-ospool-minimap
   ```
 
   or the equivalent for your device
 
-* Download the zip file of the materials: 
-  [download here](https://github.com/osg-htc/tutorial-long-read-genomics/archive/refs/heads/main.zip)
+* Copy the data files for the tutorial: 
+  ```
+  cp /path/to/files/tutorial-ospoool-minimap_reads.tar.gz ~/tutorial-ospool-minimap/data/
+  ```
+  
+* Unpack `tutorial-ospoool-minimap_reads.tar.gz` and remove afterward
+  ```
+  tar -xzvf tutorial-ospoool-minimap_reads.tar.gz
+  rm ~/tutorial-ospool-minimap/data/tutorial-ospoool-minimap_reads.tar.gz
+  ```
+
+### Setting up your software environment
+For this tutorial, we will be using an Apptainer/Singularity container to run `minimap2`. We will be using the `continuumio/miniconda3:latest` base image from Dockerhub to `conda install` minimap2 in our container. An Apptainer/Singularity definition file has been provided to you in this repository and can be found in `./tutorial-ospool-minimap/software/minimap2.def`. Additionally, for ease of use, a pre-built singularity image file for this tutorial has been provided `./tutorial-ospool-minimap/software/minimap2.sif`.
+
+* If you would like to re-build the container yourself, you can run the following commands:
+    ```
+    cd ~/tutorial-ospool-minimap/software/
+    mkdir -p $HOME/tmp
+    export TMPDIR=$HOME/tmp
+    export APPTAINER_TMPDIR=$HOME/tmp
+    export APPTAINER_CACHEDIR=$HOME/tmp
+  
+    apptainer build minimap2.sif minimap2.def
+    ```
+
+>[!TIP]
+> For more information on using containers on the OSPool, visit our guide on [Apptainer/Singularity Containers](https://portal.osg-htc.org/documentation/htc_workloads/using_software/containers-singularity/)
 
 ## Mapping Sequencing Reads to Genome
 
 ### Data Wrangling and Splitting Reads
 
-To get ready for our mapping step, we need to prepare our freshly basecalled reads. You should have a directory with several BAM files, these BAM files need to be sorted and 
+To get ready for our mapping step, we need to prepare our read files. This includes two crucial steps, splitting our reads and saving the read subset file names to a file. 
 
-1. Generate a list of the BAM files Dorado created during basecalling. Save it as `listOfBasecallingBAMs` in your OSDF directory. 
+#### Splitting the FASTQ reads
+
+1. Navigate to your `fastq_reads` directory
 
     ```
-   ls /ospool/ap40/data/<user.name>/basecalledBAMs/ > /ospool/ap40/data/<user.name>/listOfBasecallingBAMs
+   cd ~/tutorial-ospool-minimap/data/fastq_reads/
+   ```
+
+2. Split the FASTQ file into subsets of `5,000` reads per subset. Since each FASTQ read consist of four lines in the FASTQ file, we can split it every `20,000` lines
+
+    ```
+   split -l 20000 wgs_reads_cb4856.fastq cb4856_fastq_chunk_
+   rm wgs_reads_cb4856.fastq
+   ```
+
+2. Generate a list of the split FASTQ subset files. Save it as `list_of_FASTQs.txt` in your `~/tutorial-ospool-minimap/data/` directory. 
+
+    ```
+   ls > ~/tutorial-ospool-minimap/list_of_FASTQs.txt
+   ```
+   
+#### Pre-staging our files on the Open Science Data Federation (OSDF)
+There are some files we will be using frequently that do not change often. One example of this is the apptainer/singularity container image we will be using for run our minimap2 mappings. The Open Science Data Federation is a data lake accessible to the OSPool with built in caching. The OSDF can significantly improve throughput for jobs by caching files closer to the execution points. 
+
+>[!WARNING]
+> The OSDF caches files aggressively. Using files on the OSDF with names that are not unique from previous versions can cause your job to download an incorrect previous version of the data file. We recommend using unique version-controlled names for your files, such as `data_file_04JAN2025_version4.txt` with the data of last update and a version identifier. This ensures your files are correctly called by HTCondor from the OSDF. 
+
+1. Move your `minimap2.sif` container to your OSDF directory. Make sure to change `<ap##>` and `<user.name>` below to the AP number (`ap20`, `ap21`, or `<ap40>`) and the OSPool username assigned to you, respectively. 
+
+    ```
+   mv ~/tutorial-ospool-minimap/software/minimap2.sif /ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/minimap2.sif
    ```
 
 ### Running Minimap to Map Reads to the Reference Genome
@@ -88,22 +138,21 @@ To get ready for our mapping step, we need to prepare our freshly basecalled rea
        ```
    2. Create `minimap2_index.sub` using either `vim` or `nano`
         ```
-        +SingularityImage      = "osdf:///ospool/ap40/data/<user.name>/genomics_tutorial/minimap2.sif"
+        +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/minimap2.sif"
     
-        executable		       = ../executables/minimap2_index.sh
+        executable		       = ./minimap2_index.sh
         
-        transfer_input_files   = osdf:///ospool/ap40/data/<user.name>/genomics_tutorial/Celegans_ref.fa
+        transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.fa
     
-        transfer_output_files  = ./Celegans_ref.mmi
-        output_destination	   = osdf:///ospool/ap40/data/<user.name>/genomics_tutorial/
-        
-        output                 = ./minimap2/logs/$(Cluster)_$(Process)_indexing_step1.out
-        error                  = ./minimap2/logs/$(Cluster)_$(Process)_indexing_step1.err
-        log                    = ./minimap2/logs/$(Cluster)_$(Process)_indexing_step1.log
+        transfer_output_files  = ./Celegans_ref.mmi 
+        transfer_output_remaps = "Celegans_ref.mmi=osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/minimap2.sif"
+        output                 = ./log/$(Cluster)_$(Process)_indexing_step1.out
+        error                  = ./log/$(Cluster)_$(Process)_indexing_step1.err
+        log                    = ./log/$(Cluster)_$(Process)_indexing_step1.log
         
         request_cpus           = 4
-        request_disk           = 10 GB
-        request_memory         = 24 GB 
+        request_disk           = 5 GB
+        request_memory         = 5 GB 
         
         queue 1
        ```
@@ -121,33 +170,31 @@ To get ready for our mapping step, we need to prepare our freshly basecalled rea
        #!/bin/bash
        # Use minimap2 to map the basecalled reads to the reference genome
         ./minimap2 -ax map-ont Celegans_ref.mmi "$1" > "mapped_${1}_reads_to_genome.sam"
-       
-       # Use samtools to sort our mapped reads BAM, required for downstream analysis
-       samtools sort "mapped_${1}_reads_to_genome.sam" -o "mapped_${1}_reads_to_genome_sam_sorted.bam"
        ```
+       
    2. Create `minimap2_mapping.sub` using either `vim` or `nano`
        ```
-        +SingularityImage      = "osdf:///ospool/ap40/data/<user.name>/minimap2.sif"
+        +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>/minimap2.sif"
     
-        executable		       = ../executables/minimap2_index.sh
-        arguments              = $(BAM_File)
-        transfer_input_files   = osdf:///ospool/ap40/data/<user.name>/Celegans_ref.mmi, osdf:///ospool/ap40/data/<user.name>/basecalledBAMs/$(BAM_FILE)
+        executable		       = ./minimap2_mapping.sh
+        arguments              = $(read_subset_file)
+        transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/Celegans_ref.mmi, osdf:///ospool/<ap##>/data/<user.name>/basecalledBAMs/$(read_subset_file)
     
-        transfer_output_files  = ./mapped_$(BAM_FILE)_reads_to_genome_sam_sorted.bam
-        transfer_output_remaps = "mapped_$(BAM_FILE)_reads_to_genome_sam_sorted.bam=/home/<user.name>/genomics_tutorial/MappedBAMs/mapped_$(BAM_FILE)_reads_to_genome_sam_sorted.bam
+        transfer_output_files  = ./mapped_$(read_subset_file)_reads_to_genome.sam
+        transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam=~/tutorial-ospool-minimap/mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
         
-        output                 = ./minimap2/logs/$(Cluster)_$(Process)_mapping_$(BAM_FILE)_step2.out
-        error                  = ./minimap2/logs/$(Cluster)_$(Process)_mapping_$(BAM_FILE)_step2.err
-        log                    = ./minimap2/logs/$(Cluster)_$(Process)_mapping_$(BAM_FILE)_step2.log
+        output                 = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.out
+        error                  = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.err
+        log                    = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.log
         
         request_cpus           = 2
-        request_disk           = 5 GB
-        request_memory         = 10 GB 
+        request_disk           = 4 GB
+        request_memory         = 4 GB 
         
-        queue BAM_File from /home/<user.name>/genomics_tutorial/listOfBasecallingBAMs
+        queue read_subset_file from ~/tutorial-ospool-minimap/list_of_FASTQs.txt
        ```
     
-        In this step, we **are not** transferring our outputs using the OSDF. The mapped/sorted BAM files are intermediate temporary files in our analysis and do not benefit from the aggressive caching of the OSDF. By default, HTCondor will transfer outputs to the directory where we submitted our job from. Since we want to transfer the sorted mapped BAMs to a specific directory, we can use the `transfer_output_remaps` attribute on our submission script. The syntax of this attribute is:
+        In this step, we **are not** transferring our outputs using the OSDF. The mapped SAM files are intermediate temporary files in our analysis and do not benefit from the aggressive caching of the OSDF. By default, HTCondor will transfer outputs to the directory where we submitted our job from. Since we want to transfer the sorted mapped BAMs to a specific directory, we can use the `transfer_output_remaps` attribute on our submission script. The syntax of this attribute is:
    
         ```transfer_output_remaps = "<file_on_execution_point>=<desired_path_to_file_on_access_point>``` 
     
@@ -159,11 +206,11 @@ To get ready for our mapping step, we need to prepare our freshly basecalled rea
 
 ## Next Steps
 
-Now that you've completed the long-read genomics tutorial on the OSPool, you're ready to adapt these workflows for your own data and research questions. Here are some suggestions for what you can do next:
+Now that you've completed the long-read minimap tutorial on the OSPool, you're ready to adapt these workflows for your own data and research questions. Here are some suggestions for what you can do next:
 
 🧬 Apply the Workflow to Your Own Data
-* Replace the tutorial datasets with your own POD5 files and reference genome.
-* Modify the basecalling, mapping, and variant calling submit files to fit your data size, read type (e.g., simplex vs. duplex), and resource needs.
+* Replace the tutorial datasets with your own FASTQ files and reference genome.
+* Modify the mapping submit files to fit your data size, read type, and resource needs.
 
 🧰 Customize or Extend the Workflow
 * Incorporate quality control steps (e.g., filtering or read statistics) using FastQC.
@@ -175,7 +222,7 @@ Now that you've completed the long-read genomics tutorial on the OSPool, you're 
 * For help with this, see our [Containers Guide](https://portal.osg-htc.org/documentation/htc_workloads/using_software/containers/).
 
 🚀 Run Larger Analyses
-* Submit thousands of basecalling or alignment jobs across the OSPool.
+* Submit thousands of mappings or alignment jobs across the OSPool.
 * Explore data staging best practices using the OSDF for large-scale genomics workflows.
 * Consider using workflow managers (e.g., [DAGman](https://portal.osg-htc.org/documentation/htc_workloads/automated_workflows/dagman-workflows/) or [Pegasus](https://portal.osg-htc.org/documentation/htc_workloads/automated_workflows/tutorial-pegasus/)) with HTCondor.
 
@@ -185,7 +232,7 @@ Now that you've completed the long-read genomics tutorial on the OSPool, you're 
 
 ### Software
 
-In this tutorial, we created several *starter* apptainer containers, including tools like: Dorado, SAMtools, Minimap, and Sniffles2. These containers can serve as a *jumping-off* for you if you need to install additional software for your workflows. 
+In this tutorial, we created a *starter* apptainer containers for Minimap2. This container can serve as a *jumping-off* for you if you need to install additional software for your workflows. 
 
 Our recommendation for most users is to use "Apptainer" containers for deploying their software.
 For instructions on how to build an Apptainer container, see our guide [Using Apptainer/Singularity Containers](https://portal.osg-htc.org/documentation/htc_workloads/using_software/containers-singularity/).
@@ -200,7 +247,7 @@ For guides on how data movement works on the HTC system, see our [Data Staging a
 
 ### GPUs
 
-The OSPool has GPU nodes available for common use, like the ones used in this tutorial. If you would like to learn more about our GPU capacity, please visit our [GPU Guide on the OSPool Documentation Portal](https://portal.osg-htc.org/documentation/htc_workloads/specific_resource/gpu-jobs/).
+The OSPool has GPU nodes available for common use. If you would like to learn more about our GPU capacity, please visit our [GPU Guide on the OSPool Documentation Portal](https://portal.osg-htc.org/documentation/htc_workloads/specific_resource/gpu-jobs/).
 
 ## Getting Help
 
