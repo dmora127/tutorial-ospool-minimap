@@ -17,18 +17,20 @@ All of these steps are distributed across hundreds (or thousands!) of jobs using
 Jump to...
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
-- [Long-Read Genomics on the OSPool](#long-read-genomics-on-the-ospool)
-   * [Tutorial Setup](#tutorial-setup)
-      + [Assumptions](#assumptions)
-      + [Materials](#materials)
-   * [Mapping Sequencing Reads to Genome](#mapping-sequencing-reads-to-genome)
-      + [Data Wrangling and Splitting Reads](#data-wrangling-and-splitting-reads-1)
-      + [Running Minimap to Map Reads to the Reference Genome](#running-minimap-to-map-reads-to-the-reference-genome)
-   * [Next Steps](#next-steps)
-      + [Software](#software)
-      + [Data](#data)
-      + [GPUs](#gpus)
-   * [Getting Help](#getting-help)
+- [Tutorial Setup](#tutorial-setup)
+   * [Assumptions](#assumptions)
+   * [Materials](#materials)
+   * [Setting up your software environment](#setting-up-your-software-environment)
+- [Mapping Sequencing Reads to Genome](#mapping-sequencing-reads-to-genome)
+   * [Data Wrangling and Splitting Reads](#data-wrangling-and-splitting-reads)
+      + [Splitting the FASTQ reads](#splitting-the-fastq-reads)
+      + [Pre-staging our files on the Open Science Data Federation (OSDF)](#pre-staging-our-files-on-the-open-science-data-federation-osdf)
+   * [Running Minimap to Map Reads to the Reference Genome](#running-minimap-to-map-reads-to-the-reference-genome)
+- [Next Steps](#next-steps)
+   * [Software](#software)
+   * [Data](#data)
+   * [GPUs](#gpus)
+- [Getting Help](#getting-help)
 
 <!-- TOC end -->
 
@@ -177,7 +179,7 @@ There are some files we will be using frequently that do not change often. One e
        
    2. Create `minimap2_mapping.sub` using either `vim` or `nano`
        ```
-       +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>//tutorial-ospool-minimap/minimap2.sif"
+       +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/minimap2.sif"
     
        executable             = ./minimap2_mapping.sh
        arguments              = $(read_subset_file)
