@@ -141,7 +141,7 @@ There are some files we will be using frequently that do not change often. One e
         transfer_input_files   = ./data/ref_genome/Celegans_ref.fa
     
         transfer_output_files  = ./Celegans_ref.mmi 
-        transfer_output_remaps = "Celegans_ref.mmi=osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi"
+        transfer_output_remaps = "Celegans_ref.mmi = /ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi"
         output                 = ./log/$(Cluster)_$(Process)_indexing_step1.out
         error                  = ./log/$(Cluster)_$(Process)_indexing_step1.err
         log                    = ./log/$(Cluster)_$(Process)_indexing_step1.log
