@@ -55,7 +55,7 @@ To obtain a copy of the files used in this tutorial, you can
 * Clone the repository, with 
   
   ```
-  git clone https://github.com/osg-htc/tutorial-ospool-minimap
+  git clone https://github.com/dmora127/tutorial-ospool-minimap.git
   ```
 
   or the equivalent for your device
