@@ -176,7 +176,7 @@ There are some files we will be using frequently that do not change often. One e
        ```
         +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>/minimap2.sif"
     
-        executable		       = ./minimap2_mapping.sh
+        executable             = ./minimap2_mapping.sh
         arguments              = $(read_subset_file)
         transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/Celegans_ref.mmi, osdf:///ospool/<ap##>/data/<user.name>/basecalledBAMs/$(read_subset_file)
     
