@@ -184,7 +184,7 @@ There are some files we will be using frequently that do not change often. One e
        transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi, ./data/fastq_reads/$(read_subset_file)
     
        transfer_output_files  = ./mapped_$(read_subset_file)_reads_to_genome.sam
-       transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam = ./mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
+       transfer_output_remaps = "mapped_$(read_subset_file)_reads_to_genome.sam = ./data/mappedSAM/mapped_$(read_subset_file)_reads_to_genome.sam
         
        output                 = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.out
        error                  = ./log/$(Cluster)_$(Process)_mapping_$(read_subset_file)_step2.err
