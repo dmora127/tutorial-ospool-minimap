@@ -75,7 +75,14 @@ To obtain a copy of the files used in this tutorial, you can
     cp /ospool/ap40/osg-staff/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq
     ```
 >[!TIP]
-> You may be able to use `pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/software/minimap2.sif` and `pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq`. While this method is preferred, if you run into any errors the `cp` commands above are more resilient to most intermittant OSDF issues. 
+> You may be able to use 
+> ```pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/software/minimap2.sif
+> 
+>and 
+>
+>pelican object get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq```
+>
+>While this method is preferred, if you run into any errors the `cp` commands above are more resilient to most intermittant OSDF issues. 
 
 ### Setting up your software environment
 For this tutorial, we will be using an Apptainer/Singularity container to run `minimap2`. We will be using the `continuumio/miniconda3:latest` base image from Dockerhub to `conda install` minimap2 in our container. An Apptainer/Singularity definition file has been provided to you in this repository and can be found in `./tutorial-ospool-minimap/software/minimap2.def`. 
