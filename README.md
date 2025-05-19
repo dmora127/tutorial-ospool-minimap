@@ -140,7 +140,7 @@ There are some files we will be using frequently that do not change often. One e
         ```
         +SingularityImage      = "osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/minimap2.sif"
     
-        executable		       = ./minimap2_index.sh
+        executable             = ./minimap2_index.sh
         
         transfer_input_files   = osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.fa
     
