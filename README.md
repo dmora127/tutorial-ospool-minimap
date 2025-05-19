@@ -138,7 +138,7 @@ There are some files we will be using frequently that do not change often. One e
     
         executable             = ./minimap2_index.sh
         
-        transfer_input_files   = ~/tutorial-ospool-minimap/data/ref_genome/Celegans_ref.fa
+        transfer_input_files   = ./tutorial-ospool-minimap/data/ref_genome/Celegans_ref.fa
     
         transfer_output_files  = ./Celegans_ref.mmi 
         transfer_output_remaps = "Celegans_ref.mmi=osdf:///ospool/<ap##>/data/<user.name>/tutorial-ospool-minimap/Celegans_ref.mmi"
