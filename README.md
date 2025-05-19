@@ -62,9 +62,10 @@ To obtain a copy of the files used in this tutorial, you can
 
   or the equivalent for your device
 
-* Copy the data files for the tutorial: 
+* To copy the data files for the tutorial, we're going to use the `pelican get <object> <destination` command. We need to `get` two files: `minimap2.sif` and `wgs_reads_cb4856.fastq `. Run the following commands from the Access Point:
   ```
-  cp /path/to/files/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/fastq_reads
+  pelican get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/software/minimap2.sif ~/tutorial-ospool-minimap/software/minimap2.sif
+  pelican get pelican://osg-htc.org/ospool/uc-shared/public/osg-training/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq ~/tutorial-ospool-minimap/data/fastq_reads/wgs_reads_cb4856.fastq
   ```
 
 ### Setting up your software environment
